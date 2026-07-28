@@ -1,7 +1,7 @@
 # Expense Tracker Project
 # This program allows user to add expense and calculate total spending
 
-
+import csv
 #creating an Expense class to represent one expense
 class Expense:
 
@@ -15,39 +15,118 @@ class Expense:
     def display(self):
         print(f"{self.name} - {self.amount} - {self.category}")
 
-# Create an empty list to store all expenses
-expenses = []
+# -----------------------------------
+# Save expense
+# -----------------------------------
+def save_expense(expense):
+        with open("expenses.csv", "a", newline="") as file:
+            writer = csv.writer(file)
+            # Writer expense details as one row
+            writer.writerow([
+                expense.name,
+                expense.amount,
+                expense.category
+            ])
 
-# keep asking the user to enter expenses until they choose to stop
-while True:
+# -----------------------------------
+# Load expense 
+# -----------------------------------
+def load_expenses():
+    try:
+        # "r" means read mode
+        with open("expenses.csv", "r") as file:
+            reader = csv.reader(file)
+            # Read each row from the CSV file
+            for row in reader:
+                name = row[0]
+                amount = float(row[1])
+                category = row[2]
+                
+                # Creat Expense object from saved data
+                expense = Expense(name, amount, category)
 
-    # Get expense details from the user 
+                # Add old expense to the list
+                expenses.append(expense)
+
+    except FileNotFoundError:
+        # If file does not exist, continuenormally
+        pass
+
+# -----------------------------------
+# Add expense
+# -----------------------------------
+def add_expense():
+
+    # Get expense details from the user
     name = input("Enter expense name: ")
     amount = float(input("Enter amount: "))
     category = input("Enter category: ")
 
-    # Create a new expense object using the user's information
+    # Create a new Expense object
     expense = Expense(name, amount, category)
 
-    # Add the expense object to our expenses list
+    # Add to list
     expenses.append(expense)
 
-    # Ask the user if they want to add another expense
-    more = input("Add another expense? (yes/no): ")
+    # Save to CSV
+    save_expense(expense)
+    print("Expense added successsfully!\n")
 
-    # Stop the loop if the user does not type yes
-    if more.lower() !="yes":
+# -----------------------------------
+# View expenses
+# -----------------------------------
+def view_expenses():
+
+    print("\nYour Expenses:")
+
+    for expense in expenses:
+        expense.display()
+
+# -----------------------
+# show total
+# ----------------------
+def show_total():
+
+    total = 0
+
+    for expense in expenses:
+        total = total + expense.amount
+
+    print(f"\nTotal Spending: £{total: }")
+
+# ----------------------
+# Main program
+# ----------------------
+expenses = []
+
+# Load expenses
+load_expenses()
+
+# keep asking the user to enter expenses until they choose to stop
+while True:
+   
+
+    print("\n========== Expense Tracker ==========")
+    print("1. Add Expense")
+    print("2. View Expenses")
+    print("3. Show Total Spending")
+    print("4. Exit")
+
+    choice = input("Choose an option: ")
+
+    if choice == "1":
+        add_expense()
+
+    elif choice == "2":
+        view_expenses()
+
+    elif choice == "3":
+        show_total()
+
+    elif choice == "4":
+        print("Thank you for using Expense Tracker!")
         break
 
-# Display all expenses entered by the user                  
-for expense in expenses:
-    expense.display()
+    else:
+        print("Invalid option. Please try again.")
 
-# Calculate the total amount spent
-total = 0
-
-for expense in expenses:
-    total = total + expense.amount
-
-#Display the final total
-print(f"Total Spending: £{total}")
