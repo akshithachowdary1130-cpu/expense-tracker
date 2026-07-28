@@ -83,8 +83,29 @@ def view_expenses():
         expense.display()
 
 # -----------------------
+# Search expenses
+# -----------------------
+def search_expenses():
+
+    search = input("Enter category to search: ")
+
+    found = False
+
+    for expense in expenses:
+
+        if expense.category.lower() == search.lower():
+
+            expense.display()
+            found = True
+
+    if found == False:
+        print("No Expenses found.")
+
+
+
+# -----------------------
 # show total
-# ----------------------
+# -----------------------
 def show_total():
 
     total = 0
@@ -110,7 +131,8 @@ while True:
     print("1. Add Expense")
     print("2. View Expenses")
     print("3. Show Total Spending")
-    print("4. Exit")
+    print("4. Search Expenses")
+    print("5. Exit")
 
     choice = input("Choose an option: ")
 
@@ -124,6 +146,10 @@ while True:
         show_total()
 
     elif choice == "4":
+        search_expenses()
+        
+
+    elif choice == "5":
         print("Thank you for using Expense Tracker!")
         break
 
